@@ -1,0 +1,117 @@
+﻿<Window x:Class="FileRenamer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileRenamer"
+        mc:Ignorable="d"
+        Title="LF改名器(种子改名器)" 
+        Height="470" Width="804" MinWidth="415" MinHeight="340" 
+        Icon="Images/fl-renamer-icon.png"
+        xmlns:ctrl="clr-namespace:FileRenamer.Controls">
+    <Window.Resources>
+        <Storyboard x:Key="LoadingSpinStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="LoadingTextBlock">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1.6" Value="360"/>
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="LoadingGrid">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+    <TabControl x:Name="MainTabControl" Template="{DynamicResource RightTabControlTemplate}" 
+                Margin="10">
+        <TabItem x:Name="RenameTabItem" Template="{DynamicResource RightTabItemControlTemplate}">
+            <TabItem.Header>
+                <StackPanel>
+                    <TextBlock Text="改名操作" TextAlignment="Center" FontSize="16" Margin="4"></TextBlock>
+                    <StackPanel x:Name="RenameTabItemHeaderStackPanel" Margin="0,10,0,0" Orientation="Vertical">
+                        <Button x:Name="ApplyButton" Content="改名" VerticalAlignment="Top" Height="28"/>
+                        <Button x:Name="ClearButton" Content="清除列表" Height="28" Margin="0,8,0,0" VerticalAlignment="Top"/>
+                        <Button x:Name="DeleteSameNameButton" Content="删除同名文件" Height="28" Margin="0,8,0,0" VerticalAlignment="Top"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem.Header>
+            <Grid>
+                <ListView x:Name="MainListView" Margin="0,0,10,0" AllowDrop="True">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="原名称" DisplayMemberBinding="{Binding OriginFileName}" Width="230"/>
+                            <GridViewColumn Header="预览新名称" DisplayMemberBinding="{Binding AlterFileName}" Width="230"></GridViewColumn>
+                            <GridViewColumn Header="信息" DisplayMemberBinding="{Binding Message}" Width="140"></GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Grid x:Name="LoadingGrid" Margin="0,0,10,0" Background="#7FFFFFFF" Visibility="Collapsed">
+                    <TextBlock x:Name="LoadingTextBlock" TextWrapping="Wrap" Text="" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                               FontFamily="{DynamicResource FontAwesome}" FontSize="96" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="RenameOptionTabItem" Template="{DynamicResource RightTabItemControlTemplate}">
+            <TabItem.Header>
+                <StackPanel>
+                    <TextBlock Text="改名设置"  TextAlignment="Center" FontSize="16" Margin="4"></TextBlock>
+                    <StackPanel x:Name="OptionRaidoButtomGroupStackPanel" Margin="4,0,4,0" >
+                        <RadioButton x:Name="SpecificRenameRadioButton" Content="特定格式改名" IsChecked="True" Margin="0,0,0,4"/>
+                        <RadioButton x:Name="RegularRnameRadioButton" Content="规则改名" Margin="0,0,0,4"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem.Header>
+            <Border CornerRadius="3" BorderBrush="{DynamicResource btnPressStroke2}" Margin="0,0,10,0" BorderThickness="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="4">
+                    <StackPanel x:Name="OptionStackPanel">
+                        <StackPanel x:Name="SpecificRenameStackPanel" IsEnabled="{Binding IsChecked, ElementName=SpecificRenameRadioButton}">
+                            <ctrl:RenameTextBoxControl Header="照片文件名格式(.jpg/.jpeg)"
+                                                       Tip="%t : 拍摄时间\rgege"
+                                                       TimeFormatText="yyyyMMdd-HHmmss"></ctrl:RenameTextBoxControl>
+
+                            <TextBlock Text="音乐文件名格式(.mp3/.flac/.wav)"></TextBlock>
+                            <TextBox></TextBox>
+                        </StackPanel>
+                        <StackPanel x:Name="RegularRnameStackPanel">
+                            <TextBlock Text="Coming soon..." Margin="4"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </TabItem>
+        <TabItem Template="{DynamicResource RightTabItemControlTemplate}">
+            <TabItem.Header>
+                <TextBlock Text="关于"  TextAlignment="Center" FontSize="16" Margin="4"></TextBlock>
+            </TabItem.Header>
+            <Grid Width="480" Height="300">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="69*"/>
+                    <ColumnDefinition Width="47*"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="Images/alipay-code.jpg" Grid.ColumnSpan="1" Margin="0,0,0,0"></Image>
+                <TextBlock Text="谢谢使用本软件，如果你喜欢的话请支持我哦~谢谢你的心意！（支付宝扫码）" Grid.Column="0" TextWrapping="Wrap" Padding="8" VerticalAlignment="Bottom">
+                    <TextBlock.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Offset="0"/>
+                            <GradientStop Color="White" Offset="0.628"/>
+                        </LinearGradientBrush>
+                    </TextBlock.Background>
+                </TextBlock>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <Image Source="Images/fl-renamer-icon.png" Height="96" Margin="10"></Image>
+                    <TextBlock Margin="10,5" TextAlignment="Center" Text="LF改名器"></TextBlock>
+                    <TextBlock x:Name="InfoTextBlock" Margin="10,5" TextAlignment="Center"></TextBlock>
+                    <TextBlock Margin="10,5" TextAlignment="Center" Text="© 2016 leaful.com"></TextBlock>
+                    <Button x:Name="VisitWebsiteButton" Content="访问我的主页" Margin="20,0" Height="28"></Button>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>
